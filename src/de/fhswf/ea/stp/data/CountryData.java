@@ -42,20 +42,39 @@ public class CountryData {
 		System.out.println("Sortiere ...");
 		sortRoutes();
 		tspRoutes = new ArrayList<Route>();
-
+		
 		System.out.println("Entnehme kürzeste Routen ...");
-		for (Route r : routes) {
-			if (checkRoute(r)) {
-				if (edgeAmount.putIfAbsent(r.getFirstData(), 1) != null)
-					edgeAmount.put(r.getFirstData(), edgeAmount.get(r.getFirstData()));
-				if (edgeAmount.putIfAbsent(r.getSecondData(), 1) != null)
-					edgeAmount.put(r.getSecondData(), edgeAmount.get(r.getSecondData()));
-				tspRoutes.add(r);
+//		while(!routes.isEmpty()) {
+//			List<Route> remove = new ArrayList<Route>();
+			
+			for (Route r : routes) {
+//				System.out.println(r);
+				if (checkRoute(r)) {
+					if((edgeAmount.containsKey(r.getSecondData()) && edgeAmount.containsKey(r.getFirstData())) && (cities.getData().size() > tspRoutes.size() + 1 )) {
+						tspRoutes.add(r);
+						if(isCircle(r)) {
+							tspRoutes.remove(r);
+							continue;
+						}
+					} else {
+						tspRoutes.add(r);
+					}
+//					System.out.println(r.getFirstData() + ": " + edgeAmount.containsKey(r.getFirstData()) + " | " + r.getSecondData() + ": " + edgeAmount.containsKey(r.getSecondData()));
+					if (edgeAmount.putIfAbsent(r.getFirstData(), 1) != null)
+						edgeAmount.put(r.getFirstData(), edgeAmount.get(r.getFirstData()) + 1);
+					if (edgeAmount.putIfAbsent(r.getSecondData(), 1) != null)
+						edgeAmount.put(r.getSecondData(), edgeAmount.get(r.getSecondData()) + 1);
+				}
 			}
-		}
+//			for(Route r : remove)
+//				routes.remove(r);
+//		}
+		
+//		for(Route r : tspRoutes)
+//			System.out.println(r);
 
 		System.out.println("Baue Route zusammen ...");
-		cities.getData().clear();
+		cities = new XYChart.Series<Number, Number>();
 		cities.getData().add(tspRoutes.get(0).getFirstData());
 		addRoute(tspRoutes.get(0));
 	}
@@ -79,8 +98,41 @@ public class CountryData {
 		return true;
 	}
 
+	private boolean isCircle(Route r) {
+		Route currentR = r;
+		Data<Number, Number> currentData = r.getFirstData();
+		
+		while(true) {
+			currentR = getOtherNeighbor(currentData, currentR);
+			
+			if(currentR == r)
+				return true;
+			if(currentR == null)
+				break;
+			
+			if(currentR.getFirstData() == currentData)
+				currentData = currentR.getSecondData();
+			else
+				currentData = currentR.getFirstData();
+		}
+		
+		return false;
+	}
+	
+	private Route getOtherNeighbor(Data<Number, Number> data, Route oldRoute) {
+//		System.out.println(data + " | " + oldRoute);
+		for(Route r : tspRoutes) {
+			if(r != oldRoute) {
+				if(r.getFirstData() == data || r.getSecondData() == data)
+					return r;
+			}
+		}
+		
+		return null;
+	}
+	
 	private void addRoute(Route r) {
-		System.out.println(r);
+//		System.out.println(r);
 		if (!(cities.getData().contains(r.getFirstData()))) {
 			cities.getData().add(r.getFirstData());
 			for (Route nR : tspRoutes) {

@@ -1,19 +1,23 @@
 package de.fhswf.ea.stp.components;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.fhswf.ea.stp.data.CountryData;
-import de.fhswf.ea.stp.data.Route;
+import javafx.geometry.Bounds;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.chart.Axis;
-import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-public class LocationChart extends LineChart<Number, Number> {
+public class LocationChart extends ScatterChart<Number, Number> {
 
 	private CountryData cD;
 	private Stage primaryStage;
@@ -31,11 +35,12 @@ public class LocationChart extends LineChart<Number, Number> {
 
 	public void setCountry(String path) throws FileNotFoundException {
 		getData().clear();
+		cD = null;
+		System.gc();
 		
 		cD = new CountryData(path);
+		cD.calcTSP();
 		getData().add(cD.getCities());
-		
-//		cD.calcTSP();
 		
 		Double minX = Double.MAX_VALUE, maxX = Double.MIN_VALUE;
 		Double minY = Double.MAX_VALUE, maxY = Double.MIN_VALUE;
@@ -98,6 +103,45 @@ public class LocationChart extends LineChart<Number, Number> {
 		setMinHeight(minScreenY);
 		
 		primaryStage.sizeToScene();
+	}
+	
+	final List<Path> paths = new ArrayList<Path>();
+	
+	@Override
+	protected void layoutPlotChildren() {
+		super.layoutPlotChildren();
+		getPlotChildren().removeAll(paths);
+		
+		if(cD != null) {
+			Series<Number, Number> cities = cD.getCities();
+			for(int i = 0; i < cities.getData().size(); i++) {
+				Data<Number, Number> cur = cities.getData().get(i);
+				Data<Number, Number> next;
+				if(i == cities.getData().size() - 1)
+					next = cities.getData().get(0);
+				else
+					next = cities.getData().get(i + 1);
+				
+				Bounds curBounds = cur.getNode().getBoundsInParent();
+				Bounds nextBounds = next.getNode().getBoundsInParent();
+				
+				final Path path = new Path();
+				MoveTo moveTo = new MoveTo();
+				moveTo.setX(nextBounds.getMinX() + nextBounds.getWidth() / 2);
+				moveTo.setY(nextBounds.getMinY() + nextBounds.getHeight() / 2);
+
+				LineTo lineTo = new LineTo();
+				lineTo.setX(curBounds.getMinX() + curBounds.getWidth() / 2);
+				lineTo.setY(curBounds.getMinY() + curBounds.getHeight() / 2);
+
+				path.getElements().add(moveTo);
+				path.getElements().add(lineTo);
+				
+				getPlotChildren().add(path);
+				paths.add(path);
+			}
+		}
+		
 	}
 
 }
