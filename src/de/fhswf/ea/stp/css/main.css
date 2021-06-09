@@ -1,0 +1,17 @@
+.chart-line-symbol {
+	-fx-padding: 1px;
+}
+
+.chart-series-line {
+	-fx-stroke-width: 1px;
+}
+
+#locationchart2 .chart-symbol {
+	-fx-background-radius: 3px ;
+    -fx-padding: 3px ;
+}
+
+#locationchart1 .chart-symbol {
+	-fx-background-radius: 1px ;
+    -fx-padding: 1px ;
+}
