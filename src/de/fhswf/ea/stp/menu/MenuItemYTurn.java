@@ -3,7 +3,6 @@ package de.fhswf.ea.stp.menu;
 import de.fhswf.ea.stp.components.LocationChart;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Side;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.MenuItem;
 

@@ -2,15 +2,17 @@ package de.fhswf.ea.stp.data;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import de.fhswf.ea.stp.utils.FileManager;
+import de.fhswf.ea.stp.utils.QuickSort;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Data;
+import javafx.scene.control.ProgressBar;
 
 public class CountryData {
 
@@ -18,65 +20,106 @@ public class CountryData {
 	private List<Route> routes = new ArrayList<Route>();
 	private List<Route> tspRoutes = new ArrayList<Route>();
 	private Map<Data<Number, Number>, Integer> edgeAmount = new HashMap<Data<Number, Number>, Integer>();
+	private ProgressBar progressBar;
+	
+	private QuickSort quickSort;
+	
+	public CountryData(String filePath, ProgressBar progressBar) throws FileNotFoundException {
+		this.progressBar = progressBar;
+		this.quickSort = new QuickSort(progressBar);
+		
+		long start = System.currentTimeMillis();
+		cities = FileManager.loadFile(filePath, progressBar);
+		long end = System.currentTimeMillis() - start;
+		System.out.println("Laufzeit von Daten einlesen: " + end + "ms");
 
-	public CountryData(String filePath) throws FileNotFoundException {
-		cities = FileManager.loadFile(filePath);
-
+	    long sumRoute = 0;
+	    for (int i = 2; i <= cities.getData().size(); i++) {
+	        sumRoute = sumRoute + (i - 1);
+	    }
+	    double sumRouteDiv = (double) sumRoute / 20;
+		
+		start = System.currentTimeMillis();
+		
+		int routesAdded = 0;
 		for (int i = 0; i < cities.getData().size(); i++) {
 			for (int j = i + 1; j < cities.getData().size(); j++) {
+				routesAdded++;
+				
+				if(routesAdded >= sumRouteDiv) {
+					routesAdded = 0;
+					
+					double progress = ((double) routes.size()) / sumRoute / 10 + 0.05;
+					progressBar.setProgress(progress);
+				}
+				
 				routes.add(new Route(cities.getData().get(i), cities.getData().get(j), i, j));
 			}
+			
 		}
+		
+		end = System.currentTimeMillis() - start;
+		System.out.println("Laufzeit von Routen erstellen: " + end + "ms");
 	}
 
 	public void sortRoutes() {
-		Collections.sort(routes, new Comparator<Route>() {
-			@Override
-			public int compare(Route o1, Route o2) {
-				return o1.getDistance() < o2.getDistance() ? -1 : o1.getDistance() == o2.getDistance() ? 0 : 1;
-			}
-		});
+		Route[] routeArray = routes.toArray(new Route[0]);
+		quickSort.sort(routeArray);
+		routes = Arrays.asList(routeArray);
 	}
-
+	
 	public void calcTSP() {
-		System.out.println("Sortiere ...");
+		long start = System.currentTimeMillis();
 		sortRoutes();
+		long end = System.currentTimeMillis() - start;
+		System.out.println("Laufzeit von Routen sortieren: " + end + "ms");
+		progressBar.setProgress(0.7);
+		
 		tspRoutes = new ArrayList<Route>();
-		
-		System.out.println("Entnehme kürzeste Routen ...");
-//		while(!routes.isEmpty()) {
-//			List<Route> remove = new ArrayList<Route>();
-			
-			for (Route r : routes) {
-//				System.out.println(r);
-				if (checkRoute(r)) {
-					if((edgeAmount.containsKey(r.getSecondData()) && edgeAmount.containsKey(r.getFirstData())) && (cities.getData().size() > tspRoutes.size() + 1 )) {
-						tspRoutes.add(r);
-						if(isCircle(r)) {
-							tspRoutes.remove(r);
-							continue;
-						}
-					} else {
-						tspRoutes.add(r);
-					}
-//					System.out.println(r.getFirstData() + ": " + edgeAmount.containsKey(r.getFirstData()) + " | " + r.getSecondData() + ": " + edgeAmount.containsKey(r.getSecondData()));
-					if (edgeAmount.putIfAbsent(r.getFirstData(), 1) != null)
-						edgeAmount.put(r.getFirstData(), edgeAmount.get(r.getFirstData()) + 1);
-					if (edgeAmount.putIfAbsent(r.getSecondData(), 1) != null)
-						edgeAmount.put(r.getSecondData(), edgeAmount.get(r.getSecondData()) + 1);
-				}
-			}
-//			for(Route r : remove)
-//				routes.remove(r);
-//		}
-		
-//		for(Route r : tspRoutes)
-//			System.out.println(r);
 
-		System.out.println("Baue Route zusammen ...");
+		int takenRoutes = 0;
+		int takenRoutesTotal = 0;
+		double routeDiv = (double) routes.size() / 40;
+		start = System.currentTimeMillis();
+		for (Route r : routes) {
+			if (checkRoute(r)) {
+				if ((edgeAmount.containsKey(r.getSecondData()) && edgeAmount.containsKey(r.getFirstData()))
+						&& (cities.getData().size() > tspRoutes.size() + 1)) {
+					tspRoutes.add(r);
+					if (isCircle(r)) {
+						tspRoutes.remove(r);
+						continue;
+					}
+				} else {
+					tspRoutes.add(r);
+				}
+				if (edgeAmount.putIfAbsent(r.getFirstData(), 1) != null)
+					edgeAmount.put(r.getFirstData(), edgeAmount.get(r.getFirstData()) + 1);
+				if (edgeAmount.putIfAbsent(r.getSecondData(), 1) != null)
+					edgeAmount.put(r.getSecondData(), edgeAmount.get(r.getSecondData()) + 1);
+			}
+			
+			takenRoutes++;
+			takenRoutesTotal++;
+			if(takenRoutes >= routeDiv) {
+				takenRoutes = 0;
+				progressBar.setProgress((double) takenRoutesTotal / routes.size() / 5 + 0.7);
+			}
+		}
+		end = System.currentTimeMillis() - start;
+		System.out.println("Laufzeit von kürzeste Routen entnehmen: " + end + "ms");
+		
+		start = System.currentTimeMillis();
+		String name = cities.getName();
 		cities = new XYChart.Series<Number, Number>();
+		cities.setName(name);
 		cities.getData().add(tspRoutes.get(0).getFirstData());
-		addRoute(tspRoutes.get(0));
+		
+		addRoutes();
+		
+		end = System.currentTimeMillis() - start;
+		
+		System.out.println("Laufzeit von Routen zusammenbauen: " + end + "ms");
 	}
 
 	public XYChart.Series<Number, Number> getCities() {
@@ -101,58 +144,66 @@ public class CountryData {
 	private boolean isCircle(Route r) {
 		Route currentR = r;
 		Data<Number, Number> currentData = r.getFirstData();
-		
-		while(true) {
+
+		while (true) {
 			currentR = getOtherNeighbor(currentData, currentR);
-			
-			if(currentR == r)
+
+			if (currentR == r)
 				return true;
-			if(currentR == null)
+			if (currentR == null)
 				break;
-			
-			if(currentR.getFirstData() == currentData)
+
+			if (currentR.getFirstData() == currentData)
 				currentData = currentR.getSecondData();
 			else
 				currentData = currentR.getFirstData();
 		}
-		
+
 		return false;
 	}
-	
+
 	private Route getOtherNeighbor(Data<Number, Number> data, Route oldRoute) {
-//		System.out.println(data + " | " + oldRoute);
-		for(Route r : tspRoutes) {
-			if(r != oldRoute) {
-				if(r.getFirstData() == data || r.getSecondData() == data)
+		for (Route r : tspRoutes) {
+			if (r != oldRoute) {
+				if (r.getFirstData() == data || r.getSecondData() == data)
 					return r;
 			}
 		}
-		
+
 		return null;
 	}
-	
-	private void addRoute(Route r) {
-//		System.out.println(r);
-		if (!(cities.getData().contains(r.getFirstData()))) {
-			cities.getData().add(r.getFirstData());
-			for (Route nR : tspRoutes) {
-				if(nR == r)
-					continue;
-				if (nR.getFirstData() == r.getFirstData() || nR.getSecondData() == r.getFirstData()) {
-					addRoute(nR);
-					break;
+
+	private void addRoutes() {
+		Route r = tspRoutes.get(0);
+		
+		while(r != null) {
+			if (!(cities.getData().contains(r.getFirstData()))) {
+				cities.getData().add(r.getFirstData());
+				
+				for (Route nR : tspRoutes) {
+					if (nR == r)
+						continue;
+					if (nR.getFirstData() == r.getFirstData() || nR.getSecondData() == r.getFirstData()) {
+						r = nR;
+						break;
+					}
 				}
-			}
-		} else if (!(cities.getData().contains(r.getSecondData()))) {
-			cities.getData().add(r.getSecondData());
-			for (Route nR : tspRoutes) {
-				if(nR == r)
-					continue;
-				if (nR.getFirstData() == r.getSecondData() || nR.getSecondData() == r.getSecondData()) {
-					addRoute(nR);
-					break;
+			} else if (!(cities.getData().contains(r.getSecondData()))) {
+				cities.getData().add(r.getSecondData());
+				
+				for (Route nR : tspRoutes) {
+					if (nR == r)
+						continue;
+					if (nR.getFirstData() == r.getSecondData() || nR.getSecondData() == r.getSecondData()) {
+						r = nR;
+						break;
+					}
 				}
+			} else {
+				r = null;
 			}
+			
+			progressBar.setProgress((double) cities.getData().size() / tspRoutes.size() / 10 + 0.9);
 		}
 	}
 

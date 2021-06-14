@@ -12,6 +12,7 @@ public class Main extends Application {
 			MainComponent com = new MainComponent(primaryStage);
 			Scene scene = new Scene(com);
 			scene.getStylesheets().add(this.getClass().getResource("css/main.css").toExternalForm());
+			primaryStage.setTitle("TSP-Algorithmus (Greedy)");
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch(Exception e) {

@@ -51,4 +51,13 @@ public class Route {
 		return "P1: " + firstData + " P2:" +  secondData + " Distanz: " + distance;
 	}
 	
+	public int compareTo(Route compare) {
+		if(distance < compare.distance)
+			return -1;
+		else if(distance > compare.distance)
+			return 1;
+		else
+			return 0;
+	}
+	
 }
