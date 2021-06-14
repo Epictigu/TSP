@@ -6,6 +6,23 @@
 	-fx-stroke-width: 1px;
 }
 
+.axis-tick-mark, 
+.axis-minor-tick-mark, 
+.chart-vertical-grid-lines, 
+.chart-horizontal-grid-lines, 
+.chart-vertical-zero-line, 
+.chart-horizontal-zero-line  {
+    -fx-stroke: transparent;
+}
+
+.axis {
+    -fx-border-color: transparent;
+}
+
+.chart-alternative-row-fill, .chart-alternative-column-fill{
+    -fx-fill: #f5f5f5;
+}
+
 #locationchart2 .chart-symbol {
 	-fx-background-radius: 3px ;
     -fx-padding: 3px ;

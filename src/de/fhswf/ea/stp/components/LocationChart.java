@@ -32,6 +32,9 @@ public class LocationChart extends ScatterChart<Number, Number> {
 		this.primaryStage = primaryStage;
 		this.progressBar = progressBar;
 		
+		getXAxis().setTickLabelsVisible(false);
+		getYAxis().setTickLabelsVisible(false);
+		
 		setMinHeight(250D);
 		setMinWidth(250D);
 		
@@ -93,7 +96,7 @@ public class LocationChart extends ScatterChart<Number, Number> {
 				((NumberAxis) getYAxis()).setTickUnit(unitTickY);
 
 				Double differenceX = maxX - minX;
-				Double differenceY = maxX - minX;
+				Double differenceY = maxY - minY;
 				
 				Rectangle2D screenBounds = Screen.getPrimary().getBounds();
 				double mult = 0.1;
@@ -116,6 +119,8 @@ public class LocationChart extends ScatterChart<Number, Number> {
 				}
 				if(mult > 0.8) mult = 0.8;
 				
+				
+				System.out.println(differenceX + " " + differenceY);
 				
 				double minScreenX, minScreenY;
 				if (differenceX / screenBounds.getWidth() > differenceY / screenBounds.getHeight()) {
