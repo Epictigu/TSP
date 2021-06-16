@@ -5,6 +5,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ProgressBar;
@@ -24,6 +28,7 @@ public class FileManager {
 		int cityLines = 0;
 		int cityLinesTotal = 0;
 		
+		Map<Double, List<Double>> enteredCoordinates = new HashMap<Double, List<Double>>();
 		try {
 			while((s = bufferedReader.readLine()) != null) {
 				
@@ -58,6 +63,15 @@ public class FileManager {
 						
 						Double y = Double.parseDouble(args[1]);
 						Double x = Double.parseDouble(args[2]);
+						
+						if(enteredCoordinates.containsKey(x)) {
+							if(enteredCoordinates.get(x).contains(y)) {
+								continue;
+							}
+						} else {
+							enteredCoordinates.put(x, new ArrayList<Double>());
+						}
+						enteredCoordinates.get(x).add(y);
 						
 						cities.getData().add(new XYChart.Data<Number, Number>(x, y));
 					} catch (NumberFormatException e) {}

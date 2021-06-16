@@ -53,9 +53,8 @@ public class CountryData {
 					progressBar.setProgress(progress);
 				}
 				
-				routes.add(new Route(cities.getData().get(i), cities.getData().get(j), i, j));
+				routes.add(new Route(cities.getData().get(i), cities.getData().get(j)));
 			}
-			
 		}
 		
 		end = System.currentTimeMillis() - start;

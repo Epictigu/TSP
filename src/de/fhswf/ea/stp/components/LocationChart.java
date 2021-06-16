@@ -57,11 +57,8 @@ public class LocationChart extends ScatterChart<Number, Number> {
 					e.printStackTrace();
 					return;
 				}
-				long start = System.currentTimeMillis();
 				cDNew.calcTSP();
-				long end = System.currentTimeMillis() - start;
 				progressBar.setProgress(1.0);
-				System.out.println("Laufzeit: " + end + "ms");
 				
 				Double minX = Double.MAX_VALUE, maxX = Double.MIN_VALUE;
 				Double minY = Double.MAX_VALUE, maxY = Double.MIN_VALUE;
@@ -118,9 +115,6 @@ public class LocationChart extends ScatterChart<Number, Number> {
 					});
 				}
 				if(mult > 0.8) mult = 0.8;
-				
-				
-				System.out.println(differenceX + " " + differenceY);
 				
 				double minScreenX, minScreenY;
 				if (differenceX / screenBounds.getWidth() > differenceY / screenBounds.getHeight()) {

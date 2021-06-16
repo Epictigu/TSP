@@ -5,14 +5,12 @@ import javafx.scene.chart.XYChart.Data;
 public class Route {
 
 	private Data<Number, Number> firstData;
-	private int firstDataIndex;
 	
 	private Data<Number, Number> secondData;
-	private int secondDataIndex;
 	
 	private Double distance;
 	
-	public Route(Data<Number, Number> firstData, Data<Number, Number> secondData, int firstIndex, int secondIndex) {
+	public Route(Data<Number, Number> firstData, Data<Number, Number> secondData) {
 		this.firstData = firstData;
 		this.secondData = secondData;
 		
@@ -23,16 +21,8 @@ public class Route {
 		return firstData;
 	}
 	
-	public int getFirstDataIndex() {
-		return firstDataIndex;
-	}
-	
 	public Data<Number, Number> getSecondData(){
 		return secondData;
-	}
-	
-	public int getSecondDataIndex() {
-		return secondDataIndex;
 	}
 	
 	public Double getDistance() {
