@@ -20,12 +20,31 @@ import javafx.scene.shape.Path;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+/**
+ * Klasse zum Darstellen des Graphen / des TSP.
+ * Abgeleitet von ScatterChart.
+ *
+ * @author Timo Röder, Dominik Müller, Marcus Nolzen, Michael Kandziora
+ * @version 1.0
+ */
 public class LocationChart extends ScatterChart<Number, Number> {
 
 	private CountryData cD;
 	private Stage primaryStage;
 	private ProgressBar progressBar;
 	
+	/**
+	 * Konstruktor zum Vorbereiten des Graphenobjektes.
+	 *
+	 * @param x
+	 * 	X-Achse
+	 * @param y
+	 * 	Y-Achse
+	 * @param primaryStage
+	 * 	Main-Stage
+	 * @param progressBar
+	 * 	Ladebalken
+	 */
 	public LocationChart(Axis<Number> x, Axis<Number> y, Stage primaryStage, ProgressBar progressBar) {
 		super(x, y);
 		
@@ -41,6 +60,16 @@ public class LocationChart extends ScatterChart<Number, Number> {
 		setId("locationchart1");
 	}
 
+	/**
+	 * Methode zum Setzen des Landes und Berechnen des TSP.
+	 *
+	 * @param path
+	 * 	Pfad zur Datei mit den Ladesdaten.
+	 * @param menuToDisable
+	 * 	Menü, welches deaktiviert werden soll sobald die Datei geladen wird.
+	 * @throws FileNotFoundException
+	 * 	Wenn die übergebene Datei nicht gefunden wurde.
+	 */
 	public void setCountry(String path, Menu menuToDisable) throws FileNotFoundException {
 		progressBar.setProgress(0.0);
 		getData().clear();
@@ -145,9 +174,13 @@ public class LocationChart extends ScatterChart<Number, Number> {
 	
 	final List<Path> paths = new ArrayList<Path>();
 	
+	/**
+	 * Überschriebene Methode zum Darstellen der Punkte.
+	 */
 	@Override
 	protected void layoutPlotChildren() {
 		super.layoutPlotChildren();
+		
 		getPlotChildren().removeAll(paths);
 		
 		if(cD != null) {
@@ -179,6 +212,7 @@ public class LocationChart extends ScatterChart<Number, Number> {
 				paths.add(path);
 			}
 		}
+		
 		
 	}
 
