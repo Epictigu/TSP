@@ -10,8 +10,26 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Menu;
 
+/**
+ * Menüeintrag zum Anzeigen eines einzelnen Beispieles.
+ *
+ * @author Timo Röder, Dominik Müller, Marcus Nolzen
+ * @version 1.0
+ */
 public class MenuItemExample extends MenuItem{
 
+	/**
+	 * Konstruktor zum Erstellen des Menüeintrages
+	 *
+	 * @param name
+	 * 	Name des Eintrages
+	 * @param path
+	 * 	Pfad zum Beispiel
+	 * @param chart
+	 * 	Locationchart zum öffnen des Graphen.
+	 * @param parent
+	 * 	Obermenü zur Weitergabe an den Graphen.
+	 */
 	public MenuItemExample(String name, String path, LocationChart chart, Menu parent) {
 		super(name);
 		

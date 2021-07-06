@@ -5,7 +5,17 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 
+/**
+ * Main Klasse zum Ausführen der JavaFX Applikation.
+ *
+ * @author Timo Röder, Dominik Müller, Marcus Nolzen
+ * @version 1.0
+ */
 public class Main extends Application {
+	
+	/**
+	 * Start Methode zum Ausführen der JavaFX Applikation.
+	 */
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -20,6 +30,12 @@ public class Main extends Application {
 		}
 	}
 	
+	/**
+	 * Main Methode zum Ausführen des Programmes
+	 *
+	 * @param args
+	 * 	Kommandozeilenparameter
+	 */
 	public static void main(String[] args) {
 		launch(args);
 	}

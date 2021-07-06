@@ -24,7 +24,7 @@ import javafx.stage.Stage;
  * Klasse zum Darstellen des Graphen / des TSP.
  * Abgeleitet von ScatterChart.
  *
- * @author Timo Röder, Dominik Müller, Marcus Nolzen, Michael Kandziora
+ * @author Timo Röder, Dominik Müller, Marcus Nolzen
  * @version 1.0
  */
 public class LocationChart extends ScatterChart<Number, Number> {

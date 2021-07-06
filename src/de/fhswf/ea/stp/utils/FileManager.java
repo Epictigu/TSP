@@ -13,8 +13,29 @@ import java.util.Map;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ProgressBar;
 
+/**
+ * FileManager zum Einlesen der Landesinformationen.
+ * Benutzt das .tsp Dateiformat von:
+ * http://www.math.uwaterloo.ca/tsp/world/countries.html
+ *
+ * @author Timo Röder, Dominik Müller, Marcus Nolzen
+ * @version 1.0
+ */
 public class FileManager {
 	
+	/**
+	 * Statische Methode zum laden einer .tsp Datei.
+	 * Übergibt die Daten in einem XYChart.Series Format.
+	 *
+	 * @param filePath
+	 * 	Pfad zur .tsp Datei.
+	 * @param progressBar
+	 * 	Ladebalken zur Darstellung des Fortschrittes.
+	 * @return
+	 * 	Ausgelesene Daten in dem XYChart.Series Format
+	 * @throws FileNotFoundException
+	 * 	wenn path == Nicht gefunden!
+	 */
 	public static XYChart.Series<Number, Number> loadFile(String filePath, ProgressBar progressBar) throws FileNotFoundException {
 		File f = new File(filePath);
 		if(!f.exists())

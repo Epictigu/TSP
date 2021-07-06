@@ -14,6 +14,13 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Data;
 import javafx.scene.control.ProgressBar;
 
+/**
+ * Klasse zum Abspeichern von Länderdaten.
+ * Führt den TSP-Algorithmus bei Bedarf aus.
+ *
+ * @author Timo Röder, Dominik Müller, Marcus Nolzen
+ * @version 1.0
+ */
 public class CountryData {
 
 	private XYChart.Series<Number, Number> cities;
@@ -24,6 +31,16 @@ public class CountryData {
 	
 	private QuickSort quickSort;
 	
+	/**
+	 * Konstruktor zum Abspeichern und Einlesen von Länderdaten.
+	 *
+	 * @param filePath
+	 * 	Pfad für die Länderdateien.
+	 * @param progressBar
+	 * 	Ladebalken zum Aktualisieren während des TSP-Algorithmus.
+	 * @throws FileNotFoundException
+	 * 	wenn filePath == Nicht gefunden!
+	 */
 	public CountryData(String filePath, ProgressBar progressBar) throws FileNotFoundException {
 		this.progressBar = progressBar;
 		this.quickSort = new QuickSort(progressBar);
@@ -61,12 +78,18 @@ public class CountryData {
 		System.out.println("Laufzeit von Routen erstellen: " + end + "ms");
 	}
 
+	/**
+	 * Sortiert alle gegebenen Routen.
+	 */
 	public void sortRoutes() {
 		Route[] routeArray = routes.toArray(new Route[0]);
 		quickSort.sort(routeArray);
 		routes = Arrays.asList(routeArray);
 	}
 	
+	/**
+	 * Berechnet den TSP-Algorithmus für die gegebenen Daten.
+	 */
 	public void calcTSP() {
 		long start = System.currentTimeMillis();
 		sortRoutes();
@@ -121,10 +144,21 @@ public class CountryData {
 		System.out.println("Laufzeit von Routen zusammenbauen: " + end + "ms");
 	}
 
+	/**
+	 * Gibt alle Städte der eingelesen Daten zurück.
+	 *
+	 * @return
+	 * 	Städte im Format XYChart.Series
+	 */
 	public XYChart.Series<Number, Number> getCities() {
 		return cities;
 	}
 
+	/**
+	 * Gibt alle Routen des TSP-Algorithmus zurück.
+	 *
+	 * @return
+	 */
 	public List<Route> getRoutes() {
 		return Collections.unmodifiableList(routes);
 	}

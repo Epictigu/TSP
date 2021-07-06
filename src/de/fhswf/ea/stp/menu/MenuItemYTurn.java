@@ -6,8 +6,20 @@ import javafx.event.EventHandler;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.MenuItem;
 
+/**
+ * Menüeintrag zum drehen der y-Achse
+ *
+ * @author Timo Röder, Dominik Müller, Marcus Nolzen
+ * @version 1.0
+ */
 public class MenuItemYTurn extends MenuItem{
 	
+	/**
+	 * Konstruktor zum Erstellen des Menüeintrages.
+	 *
+	 * @param chart
+	 * 	Locationchart zum Drehen der Achse
+	 */
 	public MenuItemYTurn(LocationChart chart) {
 		super("Y-Achse drehen");
 		

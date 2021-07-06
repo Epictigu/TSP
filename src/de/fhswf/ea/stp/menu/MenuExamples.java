@@ -3,8 +3,20 @@ package de.fhswf.ea.stp.menu;
 import de.fhswf.ea.stp.components.LocationChart;
 import javafx.scene.control.Menu;
 
+/**
+ * Menü zum Anbieten von Beispielen.
+ *
+ * @author Timo Röder, Dominik Müller, Marcus Nolzen
+ * @version 1.0
+ */
 public class MenuExamples extends Menu{
 	
+	/**
+	 * Fügt die einzelnen Beispieleinträge hinzu.
+	 *
+	 * @param chart
+	 * 	Übergibt den Locationchart an die Menüeinträge weiter.
+	 */
 	public MenuExamples(LocationChart chart) {
 		super("Beispiele");
 		

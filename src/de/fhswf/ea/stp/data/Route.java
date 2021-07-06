@@ -2,6 +2,13 @@ package de.fhswf.ea.stp.data;
 
 import javafx.scene.chart.XYChart.Data;
 
+/**
+ * Objektklasse für Routen.
+ * Speichert die Punkte sowie die Distanz.
+ *
+ * @author Timo Röder, Dominik Müller, Marcus Nolzen
+ * @version 1.0
+ */
 public class Route {
 
 	private Data<Number, Number> firstData;
@@ -10,6 +17,12 @@ public class Route {
 	
 	private Double distance;
 	
+	/**
+	 * Konstruktor zum Erstellen einer Route.
+	 *
+	 * @param firstData
+	 * @param secondData
+	 */
 	public Route(Data<Number, Number> firstData, Data<Number, Number> secondData) {
 		this.firstData = firstData;
 		this.secondData = secondData;
@@ -17,14 +30,32 @@ public class Route {
 		distance = getDistance(firstData, secondData);
 	}
 	
+	/**
+	 * Getter-Funktion für den ersten Datensatz.
+	 *
+	 * @return
+	 * 	Erster Datensatz
+	 */
 	public Data<Number, Number> getFirstData(){
 		return firstData;
 	}
 	
+	/**
+	 * Getter-Funktion für den zweiten Datensatz.
+	 *
+	 * @return
+	 * 	Zweiter Datensatz
+	 */
 	public Data<Number, Number> getSecondData(){
 		return secondData;
 	}
 	
+	/**
+	 * Getter-Funktion für die Distanz
+	 *
+	 * @return
+	 * 	Distanz zwischen den beiden Datensätzen.
+	 */
 	public Double getDistance() {
 		return distance;
 	}
@@ -36,11 +67,24 @@ public class Route {
 		return Math.sqrt(Math.pow(distX, 2D) + Math.pow(distY, 2D));
 	}
 	
+	/**
+	 * ToString Methode der Route.
+	 */
 	@Override
 	public String toString() {
 		return "P1: " + firstData + " P2:" +  secondData + " Distanz: " + distance;
 	}
 	
+	/**
+	 * CompareTo Methode für die Sortierung
+	 *
+	 * @param compare
+	 * 	Route mit der vergliechen werden soll.
+	 * @return
+	 * 	wenn this < compare
+	 * 	wenn this > compare
+	 * 	wenn this = compare
+	 */
 	public int compareTo(Route compare) {
 		if(distance < compare.distance)
 			return -1;
